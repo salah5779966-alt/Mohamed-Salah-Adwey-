@@ -1,0 +1,56 @@
+#include "STD_TYPES.h"
+#include "BIT_MATH.h"
+
+#include "DIO_interface.h"
+#include "LED_interface.h"
+#include "SWITCH_interface.h"
+
+#define SWITCH_PORT     DIO_PORTA
+#define LED_PORT        DIO_PORTB
+
+#define SW1_PIN         DIO_PIN0
+#define SW2_PIN         DIO_PIN1
+#define SW3_PIN         DIO_PIN2
+#define SW_ALL_PIN      DIO_PIN3
+
+#define LED1_PIN        DIO_PIN0
+#define LED2_PIN        DIO_PIN1
+#define LED3_PIN        DIO_PIN2
+
+int main(void) {
+    DIO_voidSetPortDirection(SWITCH_PORT, DIO_PORT_INPUT);
+    DIO_voidSetPortValue(SWITCH_PORT, DIO_PORT_OUTPUT);
+
+    LED_voidInit(LED_PORT, LED1_PIN);
+    LED_voidInit(LED_PORT, LED2_PIN);
+    LED_voidInit(LED_PORT, LED3_PIN);
+
+    while (1) {
+        if (SWITCH_u8GetState(SWITCH_PORT, SW_ALL_PIN) == SWITCH_PRESSED) {
+            LED_voidOn(LED_PORT, LED1_PIN);
+            LED_voidOn(LED_PORT, LED2_PIN);
+            LED_voidOn(LED_PORT, LED3_PIN);
+        } 
+        else {
+            if (SWITCH_u8GetState(SWITCH_PORT, SW1_PIN) == SWITCH_PRESSED) {
+                LED_voidOn(LED_PORT, LED1_PIN);
+            } else {
+                LED_voidOff(LED_PORT, LED1_PIN);
+            }
+
+            if (SWITCH_u8GetState(SWITCH_PORT, SW2_PIN) == SWITCH_PRESSED) {
+                LED_voidOn(LED_PORT, LED2_PIN);
+            } else {
+                LED_voidOff(LED_PORT, LED2_PIN);
+            }
+
+            if (SWITCH_u8GetState(SWITCH_PORT, SW3_PIN) == SWITCH_PRESSED) {
+                LED_voidOn(LED_PORT, LED3_PIN);
+            } else {
+                LED_voidOff(LED_PORT, LED3_PIN);
+            }
+        }
+    }
+
+    return 0;
+}
