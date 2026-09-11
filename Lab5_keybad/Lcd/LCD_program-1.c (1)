@@ -1,0 +1,92 @@
+#define F_CPU 16000000UL
+#include <util/delay.h>
+#include "../MCAL/DIO_interface.h"
+#include "LCD_interface.h"
+
+#define LCD_DATA_PORT PORTA
+#define LCD_CTRL_PORT PORTB
+
+#define RS_PIN PIN0
+#define RW_PIN PIN1
+#define EN_PIN PIN2
+
+void LCD_voidSendCommand(unsigned char Copy_u8Command)
+{
+    DIO_voidSetPinValue(LCD_CTRL_PORT, RS_PIN, LOW);
+    DIO_voidSetPinValue(LCD_CTRL_PORT, RW_PIN, LOW);
+    DIO_voidSetPortValue(LCD_DATA_PORT, Copy_u8Command);
+    
+    DIO_voidSetPinValue(LCD_CTRL_PORT, EN_PIN, HIGH);
+    _delay_ms(2);
+    DIO_voidSetPinValue(LCD_CTRL_PORT, EN_PIN, LOW);
+}
+
+void LCD_voidSendData(unsigned char Copy_u8Data)
+{
+    DIO_voidSetPinValue(LCD_CTRL_PORT, RS_PIN, HIGH);
+    DIO_voidSetPinValue(LCD_CTRL_PORT, RW_PIN, LOW);
+    DIO_voidSetPortValue(LCD_DATA_PORT, Copy_u8Data);
+    
+    DIO_voidSetPinValue(LCD_CTRL_PORT, EN_PIN, HIGH);
+    _delay_ms(2);
+    DIO_voidSetPinValue(LCD_CTRL_PORT, EN_PIN, LOW);
+}
+
+void LCD_voidInit(void)
+{
+    DIO_voidSetPortDirection(LCD_DATA_PORT, 0xFF);
+    DIO_voidSetPinDirection(LCD_CTRL_PORT, RS_PIN, OUTPUT);
+    DIO_voidSetPinDirection(LCD_CTRL_PORT, RW_PIN, OUTPUT);
+    DIO_voidSetPinDirection(LCD_CTRL_PORT, EN_PIN, OUTPUT);
+
+    _delay_ms(40);
+    LCD_voidSendCommand(0x38);
+    LCD_voidSendCommand(0x0C);
+    LCD_voidSendCommand(0x01);
+    _delay_ms(2);
+}
+
+void LCD_voidSendString(const char *Copy_charString)
+{
+    unsigned char i = 0;
+    while (Copy_charString[i] != '\0')
+    {
+        LCD_voidSendData(Copy_charString[i]);
+        i++;
+    }
+}
+
+void LCD_voidSendNumber(int Copy_s32Number)
+{
+    char Local_charBuffer[10];
+    int i = 0, j;
+
+    if (Copy_s32Number == 0)
+    {
+        LCD_voidSendData('0');
+        return;
+    }
+
+    if (Copy_s32Number < 0)
+    {
+        LCD_voidSendData('-');
+        Copy_s32Number = -Copy_s32Number;
+    }
+
+    while (Copy_s32Number > 0)
+    {
+        Local_charBuffer[i++] = (Copy_s32Number % 10) + '0';
+        Copy_s32Number /= 10;
+    }
+
+    for (j = i - 1; j >= 0; j--)
+    {
+        LCD_voidSendData(Local_charBuffer[j]);
+    }
+}
+
+void LCD_voidClear(void)
+{
+    LCD_voidSendCommand(0x01);
+    _delay_ms(2);
+}
