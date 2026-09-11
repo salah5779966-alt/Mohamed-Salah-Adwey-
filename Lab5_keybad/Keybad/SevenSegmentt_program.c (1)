@@ -1,0 +1,22 @@
+#include "../MCAL/DIO_interface.h"
+#include "SevenSegment_interface.h"
+
+#define SEG_PORT PORTA
+
+static const unsigned char SevenSegArray[10] = {
+    0x3F, 0x06, 0x5B, 0x4F, 0x66, 0x6D, 0x7D, 0x07, 0x7F, 0x6F
+};
+
+void SevenSegment_voidInit(void)
+{
+    DIO_voidSetPortDirection(SEG_PORT, 0xFF);
+    DIO_voidSetPortValue(SEG_PORT, 0x00);
+}
+
+void SevenSegment_voidDisplayNumber( u8 Copy_u8Number)
+{
+    if (Copy_u8Number <= 9)
+    {
+        DIO_voidSetPortValue(SEG_PORT, SevenSegArray[Copy_u8Number]);
+    }
+}
