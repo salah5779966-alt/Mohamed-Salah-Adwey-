@@ -1,0 +1,14 @@
+#ifndef SWITCH_INTERFACE_H
+#define SWITCH_INTERFACE_H
+
+#include "../../LIB/STD_TYPES.h"
+
+typedef struct
+{
+    u8 Port;
+    u8 Pin;
+} SWITCH_t;
+
+void SWITCH_voidInit(SWITCH_t* copy_pxSwitch);
+
+#endif

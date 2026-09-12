@@ -1,0 +1,48 @@
+#include "LIB/STD_TYPES.h"
+#include "MCAL/DIO/DIO_interface.h"
+#include "MCAL/EXTI/EXTI_interface.h"
+#include "MCAL/GIE/GIE_interface.h"
+#include "HAL/LED/LED_interface.h"
+#include "HAL/SWITCH/SWITCH_interface.h"
+
+LED_t Led0 = {DIO_PORTA, DIO_PIN0};
+LED_t Led1 = {DIO_PORTA, DIO_PIN1};
+
+SWITCH_t Btn0 = {DIO_PORTD, DIO_PIN2};
+SWITCH_t Btn1 = {DIO_PORTD, DIO_PIN3};
+
+void INT0_ISR(void)
+{
+    LED_voidToggle(&Led0);
+}
+
+void INT1_ISR(void)
+{
+    LED_voidToggle(&Led1);
+}
+
+int main(void)
+{
+    LED_voidInit(&Led0);
+    LED_voidInit(&Led1);
+
+    SWITCH_voidInit(&Btn0);
+    SWITCH_voidInit(&Btn1);
+
+    EXTI_voidSetCallBack(EXTI_INT0, &INT0_ISR);
+    EXTI_voidSetCallBack(EXTI_INT1, &INT1_ISR);
+
+    EXTI_voidInit(EXTI_INT0, EXTI_IOC);
+    EXTI_voidInit(EXTI_INT1, EXTI_IOC);
+
+    EXTI_voidEnableInterrupt(EXTI_INT0);
+    EXTI_voidEnableInterrupt(EXTI_INT1);
+
+    GIE_voidEnable();
+
+    while (1)
+    {
+    }
+
+    return 0;
+}
