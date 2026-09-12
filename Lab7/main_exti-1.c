@@ -1,9 +1,9 @@
 #include <util/delay.h>
-#include "../LIB/STD_TYPES.h"
-#include "../MCAL/DIO/DIO_interface.h"
-#include "../MCAL/EXTI/EXTI_interface.h"
-#include "../MCAL/GIE/GIE_interface.h"
-#include "../HAL/SWITCH/SWITCH_interface.h"
+#include "..STD_TYPES.h"
+#include "..DIO/DIO_interface.h"
+#include "..EXTI/EXTI_interface.h"
+#include "..GIE/GIE_interface.h"
+#include "..SWITCH/SWITCH_interface.h"
 
 volatile u8 global_u8AnimationMode = 0;
 
